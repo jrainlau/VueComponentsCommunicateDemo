@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="demo">
+			<the-parent></parent>
+			<!--<first-child></first-child>
+			<second-child :childmsg = "parentMsg"></second-child>-->
+		</div>
+		<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			
+			var firstChild = Vue.extend({
+				template: '<p>Child-A: I will send this massage to my parent: </p><input type="text" v-model="inputter"/><br/><br/>',
+				data: function(){
+						return {
+							inputter:""
+						}
+				},
+				watch: {
+					'inputter': function(){
+						this.$dispatch('inputter-msg',this.inputter)
+					}
+				}
+			})
+		
+			var secondChild = Vue.extend({
+				template: '<p>{{ say }}{{ childmsg }}</p>',
+				props: ['childmsg'],
+				data: function(){
+					return { say: 'Child-B: The data came from my parent is: '}
+				},
+				
+			})
+			
+			var parent = Vue.extend({
+				template: '<div><first-child></first-child><second-child :childmsg="parentMsg"></second-child></div>',
+				data: function(){
+					return {
+						recievedMsg: "hello",
+						parentMsg: ""
+					}
+				},
+				components: {
+					'first-child': firstChild,
+					'second-child': secondChild
+				},
+				events: {
+					'inputter-msg': function(inputter){
+						this.parentMsg = inputter;
+					}
+				}
+			})
+			
+			
+			Vue.component('the-parent',parent)
+			
+			new Vue({
+				el: "#demo",
+//				data: {
+//					parentMsg: ""
+//				},
+//				components:{
+//					'first-child': firstChild,
+//					'second-child': secondChild
+//				},
+//				events: {
+//					'inputter-msg': function(inputter){
+//						this.parentMsg = inputter;
+//					}
+//				}
+			})
+		</script>
+	</body>
+</html>
